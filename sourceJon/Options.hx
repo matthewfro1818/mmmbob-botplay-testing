@@ -230,7 +230,7 @@ class BotplayOption extends Option
 
 	private override function updateDisplay():String
 	{
-		return "botplay " + (!FlxG.save.data.botplay ? "on" : "off");
+		return FlxG.save.data.botplay ? "botplay on" : "botplay off";
 	}
 }
 
