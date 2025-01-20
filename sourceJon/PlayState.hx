@@ -2675,8 +2675,13 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;
 		if (SONG.validScore && !botPlay)
 		{
+			trace("score is valid");
+
+			FlxG.save.flush();
+
 			#if !switch
-			Highscore.saveScore(SONG.song, Math.round(songScore), storyDifficulty);
+			Highscore.saveScore(SONG.song, songScore, storyDifficulty, characteroverride == "none"
+				|| characteroverride == "bf" ? "bf" : characteroverride);
 			#end
 		}
 
@@ -2725,7 +2730,6 @@ class PlayState extends MusicBeatState
 
 					if (SONG.validScore && !botPlay)
 					{
-						NGio.unlockMedal(60961);
 						Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 					}
 
@@ -2813,33 +2817,39 @@ class PlayState extends MusicBeatState
 
 			var daRating = daNote.rating;
                         
+
 		if (!botPlay) {
-			switch(daRating)
+			if (noteDiff > Conductor.safeZoneOffset * 2)
 			{
-				case 'shit':
-					score = -300;
-					combo = 0;
-					misses++;
-					health -= 0.2;
-					ss = false;
-					shits++;
-				case 'bad':
-					daRating = 'bad';
-					score = 0;
-					health -= 0.06;
-					ss = false;
-					bads++;
-				case 'good':
-					daRating = 'good';
-					score = 200;
-					ss = false;
-					goods++;
-					if (health < 2)
-						health += 0.04;
-				case 'sick':
-					if (health < 2)
-						health += 0.1;
-					sicks++;
+				daRating = 'shit';
+				totalNotesHit -= 2;
+				score = 10;
+				ss = false;
+				shits++;
+			}
+			else if (noteDiff < Conductor.safeZoneOffset * -2)
+			{
+				daRating = 'shit';
+				totalNotesHit -= 2;
+				score = 25;
+				ss = false;
+				shits++;
+			}
+			else if (noteDiff > Conductor.safeZoneOffset * 0.45)
+			{
+				daRating = 'bad';
+				score = 100;
+				totalNotesHit += 0.2;
+				ss = false;
+				bads++;
+			}
+			else if (noteDiff > Conductor.safeZoneOffset * 0.25)
+			{
+				daRating = 'good';
+				totalNotesHit += 0.65;
+				score = 200;
+				ss = false;
+				goods++;
 			}
 		}
 
@@ -3476,7 +3486,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	/*function badNoteCheck()
+	function badNoteCheck()
 		{
 			// just double pasting this shit cuz fuk u
 			// REDO THIS SYSTEM!
@@ -3529,6 +3539,11 @@ class PlayState extends MusicBeatState
 	function noteCheck(controlArray:Array<Bool>, note:Note):Void // sorry lol
 		{
 			var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition);
+
+		        if (!botPlay)
+	         	{
+				badNoteCheck(note);
+	        	}
 
 			if (noteDiff > Conductor.safeZoneOffset * 0.70 || noteDiff < Conductor.safeZoneOffset * -0.70)
 				note.rating = "shit";
@@ -3625,16 +3640,23 @@ class PlayState extends MusicBeatState
 						}
 					}
 		
-					if (!loadRep)
-					   if(botPlay) {
-						playerStrums.forEach(function(spr:FlxSprite)
-						{
-							if (Math.abs(note.noteData) == spr.ID)
-							{
-								spr.animation.play('confirm', true);
-							}
-						});
-					}
+                                        playerStrums.forEach(function(spr:StrumNote) {
+			        	if(botPlay) {
+				        	if (Math.abs(Math.round(Math.abs(note.noteData)) % playerStrumAmount) == spr.ID)
+					       {
+					        	spr.playAnim('confirm', true);
+					         	spr.animation.finishCallback = function(name:String)
+					        	{
+						        	spr.playAnim('static', true);
+					         	}
+				        	}
+			        	} else {
+				                 	if (Math.abs(note.noteData) == spr.ID)
+				                	{
+					                 	spr.playAnim('confirm', true);
+				                	}
+				        	}
+			                });
 
 					note.wasGoodHit = true;
 					vocals.volume = 1;
