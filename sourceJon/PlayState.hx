@@ -3636,16 +3636,16 @@ class PlayState extends MusicBeatState
 		
                                         playerStrums.forEach(function(spr:FlxSprite) {
 			        	if(botPlay) {
-				        	if (Math.abs(Math.round(Math.abs(note.noteData))))
-					        {
-					        	spr.playAnim('confirm', true);
-					         	spr.animation.finishCallback = function(name:String)
-					        	{
-						        	spr.playAnim('static', true);
-					         	}
-				        	}
-			        	} else {
-				                 	if (Math.abs(note.noteData) == spr.ID)
+					{
+				           if (Math.abs(note.noteData) == spr.ID) {
+					          spr.playAnim('confirm', true);
+				                   spr.animation.finishCallback = function(name:String)
+				         	    {
+						    	spr.playAnim('static', true);
+						    }
+					   }
+					} else {
+				                    if (Math.abs(note.noteData) == spr.ID)
 				                	{
 					                 	spr.playAnim('confirm', true);
 				                	}
