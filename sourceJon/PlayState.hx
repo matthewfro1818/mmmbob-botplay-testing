@@ -3486,7 +3486,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function badNoteCheck()
+	/*function badNoteCheck()
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
@@ -3504,7 +3504,7 @@ class PlayState extends MusicBeatState
 		if (downP)
 			noteMiss(1);
 		updateAccuracy();
-	}
+	}*/
 	function updateAccuracy() 
 		{
 			totalPlayed += 1;
@@ -3538,11 +3538,6 @@ class PlayState extends MusicBeatState
 	function noteCheck(controlArray:Array<Bool>, note:Note):Void // sorry lol
 		{
 			var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition);
-
-		        if (!botPlay)
-	         	{
-				badNoteCheck(note);
-	        	}
 
 			if (noteDiff > Conductor.safeZoneOffset * 0.70 || noteDiff < Conductor.safeZoneOffset * -0.70)
 				note.rating = "shit";
@@ -3639,7 +3634,7 @@ class PlayState extends MusicBeatState
 						}
 					}
 		
-                                        playerStrums.forEach(function(spr:StrumNote) {
+                                        playerStrums.forEach(function(spr:Note) {
 			        	if(botPlay) {
 				        	if (Math.abs(Math.round(Math.abs(note.noteData)) % playerStrumAmount) == spr.ID)
 					       {
