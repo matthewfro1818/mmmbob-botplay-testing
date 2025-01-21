@@ -3633,23 +3633,21 @@ class PlayState extends MusicBeatState
 								boyfriend.playAnim('singLEFT', true);
 						}
 					}
-		
-                                        playerStrums.forEach(function(spr:FlxSprite) {
+		                                        playerStrums.forEach(function(spr:Note) {
 			        	if(botPlay) {
-					{
-				           if (Math.abs(note.noteData) == spr.ID) {
-					          spr.playAnim('confirm', true);
-				                   spr.animation.finishCallback = function(name:String)
-				         	    {
-						    	spr.playAnim('static', true);
-						    }
-					   }
-					} else {
-				                    if (Math.abs(note.noteData) == spr.ID)
-				                	{
-					                 	spr.playAnim('confirm', true);
-				                	}
-				        	}
+				               if (Math.abs(Math.round(note.noteData) == spr.ID)
+					       {
+					        	spr.playAnim('confirm', true);
+					         	spr.animation.finishCallback = function(name:String)
+					        	{
+						        	spr.playAnim('static', true);
+					         	}
+					       }
+			                } else {
+				               	if (Math.abs(note.noteData) == spr.ID)
+				               	{
+					               	spr.playAnim('confirm', true);
+				               	}
 			                });
 
 					note.wasGoodHit = true;
